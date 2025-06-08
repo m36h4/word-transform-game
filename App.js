@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { View, Text, TextInput, Button, FlatList, Alert, ScrollView } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import dictionary from './assets/dictionary.json';
 
 const wordList = Object.keys(dictionary);
@@ -11,7 +12,7 @@ export default function App() {
   const [history, setHistory] = useState([]);
   const [input, setInput] = useState('');
   const [gameStarted, setGameStarted] = useState(false);
-  const [wordLength, setWordLength] = useState(4); // Default word length
+  const [wordLength, setWordLength] = useState(4);
   const [hint, setHint] = useState(null);
 
   const isValidWord = (word) => {
@@ -46,6 +47,7 @@ export default function App() {
     setHistory([start]);
     setGameStarted(true);
     setHint(null);
+    setInput('');
   };
 
   const handleSubmit = () => {
@@ -76,8 +78,13 @@ export default function App() {
   };
 
   const handleRestart = () => {
+    setGameStarted(false);
     setInput('');
-    startGame();
+    setHint(null);
+    setHistory([]);
+    setCurrentWord('');
+    setStartWord('');
+    setTargetWord('');
   };
 
   const showHint = () => {
@@ -102,13 +109,23 @@ export default function App() {
     setHint('No valid path');
   };
 
-  useEffect(() => {
-    startGame();
-  }, []);
-
   return (
-    <ScrollView contentContainerStyle={{ padding: 20, marginTop: 50 }}>
-      {gameStarted && (
+    <View style={{ padding: 20, marginTop: 50, flex: 1 }}>
+      {!gameStarted ? (
+        <>
+          <Text style={{ fontSize: 18, marginBottom: 10 }}>Select Word Length:</Text>
+          <Picker
+            selectedValue={wordLength}
+            onValueChange={(value) => setWordLength(value)}
+            style={{ marginBottom: 20 }}
+          >
+            {[3, 4, 5, 6, 7, 8].map(len => (
+              <Picker.Item key={len} label={`${len}-letter words`} value={len} />
+            ))}
+          </Picker>
+          <Button title="Start Game" onPress={startGame} />
+        </>
+      ) : (
         <>
           <Text style={{ fontSize: 20, marginBottom: 10 }}>Transform {startWord} to {targetWord}</Text>
           <TextInput
@@ -142,6 +159,6 @@ export default function App() {
           />
         </>
       )}
-    </ScrollView>
+    </View>
   );
 }
