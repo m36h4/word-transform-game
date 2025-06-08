@@ -8,6 +8,7 @@ Built with **React Native + Expo**, playable on Web, Android, and iOS.
 
 ## 🎮 How to Play
 
+- Select Word length (3–8 letters)
 - You're given a start word and a target word of the same length.
 - Enter new words by changing only one letter at a time.
 - Each word must be valid (checked against a real dictionary).
